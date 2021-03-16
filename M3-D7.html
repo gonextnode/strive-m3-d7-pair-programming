@@ -4,7 +4,10 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <!-- Required meta tags -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
     <link
@@ -49,6 +52,19 @@
     -->
   </head>
   <body>
+    <div class="container mt-5">
+      <label for="users">select user filter</label>
+
+      <select name="user" id="selectoption">
+        <option value="name">Name</option>
+        <option value="username">Username</option>
+        <option value="email">Email</option>
+      </select>
+
+      <input placeholder="users" />
+      <button>Submit</button>
+      <section id="output"></section>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
@@ -61,21 +77,6 @@
       integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
       crossorigin="anonymous"
     ></script>
-
-    <div class="container mt-5">
-      <label for="users">select user filter</label>
-
-      <select name="user" id="selectoption">
-        <option value="name">Name</option>
-        <option value="username">Username</option>
-        <option value="email">Email</option>
-      </select>
-
-      <input placeholder="users" />
-
-      <section id="output"></section>
-    </div>
-
     <script src="script.js"></script>
   </body>
 </html>
