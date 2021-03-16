@@ -28,39 +28,49 @@
 
 //       EXTRA)
 //       Visualize on a Google Map plugin all the users (using lat & lng)
+const input = document.querySelector("input");
+const selectOption = document.querySelector("#selectoption");
+const button = document.querySelector("button");
+window.onload = async () => {
+  input.value = "";
+  selectOption.value = "username";
 
-async function App() {
-  let userInput = ''
-  let option = 'name'
+  // input.addEventListener("onkeyup", result);
+  button.onclick = result;
 
-  const input = document.querySelector('input')
-  const selectOption = document.querySelector('#selectoption')
+  // selectOption.addEventListener("change", (e) => {
+  //   option = e.target.value;
+  //   console.log(option);
+  // });
 
-  input.addEventListener('keyup', (e) => {
-    userInput = e.target.value
-  })
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json().catch((err) => console.log(err));
+  console.log(users);
 
-  selectOption.addEventListener('change', (e) => {
-    console.log(option)
-    option = e.target.value
-  })
+  // const filterName = () => {
+  //   console.log(users.filter((user) => user.name === option));
+  // };
 
-  const response = await fetch('https://jsonplaceholder.typicode.com/users')
-  const users = await response.json()
+  // const filterUsername = () => {
+  //   console.log(users.filter((user) => user.email === "Sincere@april.biz"));
+  // };
 
-  const filterName = () => {
-    console.log(users.filter((user) => user.name === option))
+  // const filterEmail = () => {
+  //   console.log(users.filter((user) => user.email === "Sincere@april.biz"));
+  // };
+
+  // filterName();
+
+  function result(
+    e,
+    selectedOption = selectOption.value,
+    inputU = input.value.toLowerCase()
+  ) {
+    let filter = users.map((user) => {
+      if (user[selectedOption].toLowerCase().includes(inputU)) {
+        console.log(user[selectedOption]);
+        return user[selectedOption];
+      }
+    });
   }
-
-  const filterUsername = () => {
-    console.log(users.filter((user) => user.email === 'Sincere@april.biz'))
-  }
-
-  const filterEmail = () => {
-    console.log(users.filter((user) => user.email === 'Sincere@april.biz'))
-  }
-
-  filterName()
-}
-
-App()
+};
