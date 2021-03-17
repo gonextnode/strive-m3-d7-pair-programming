@@ -27,8 +27,8 @@ function UserPage() {
       </section>
     </div>
     <div class="col">
-      <h5>Results</h5>
-      <section id="results">
+      <h5>Filter Results</h5>
+      <section id="filteredresults">
         ${renderFilteredList()}
       </section>
     </div>
@@ -42,6 +42,7 @@ async function getInitialData() {
   const users = await response.json()
 
   document.getElementById('output').innerHTML = users.map((user) => `<div>${user.name}</div>`).join('')
+  document.getElementById('filteredresults').innerHTML = users.map((user) => `<div>${user.name}</div>`).join('')
 }
 
 async function getFilteredData() {
@@ -61,7 +62,7 @@ async function getFilteredData() {
   }
 
   const input = document.getElementById('userinput')
-  const results = document.getElementById('results')
+  const results = document.getElementById('filteredresults')
   const options = document.getElementById('options')
 
   options.addEventListener('change', (e) => {
