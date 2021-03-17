@@ -1,22 +1,23 @@
 function UserPage() {
   renderUserList = getInitialData
-  renderFilteredList = getFilteredData
+  //renderFilteredList = getFilteredData
 
   return /*html*/ `
   <div class="container mt-5">
+  <h1 id="loading"></h1>
   <div>
     <button>Get Users</button>
   </div>
 
   <label for="users">select user filter</label>
 
-  <select name="user" id="options">
+  <select name="user" id="options" onchange="state.options = this.value">
     <option value="name" selected="selected">Name</option>
     <option value="username">Username</option>
     <option value="email">Email</option>
   </select>
 
-  <input id="userinput" placeholder="users" />
+  <input id="userinput" placeholder="users" oninput="setState(this.value)" />
 
   <hr />
   <div class="row">
@@ -29,7 +30,7 @@ function UserPage() {
     <div class="col">
       <h5>Filter Results</h5>
       <section id="filteredresults">
-        ${renderFilteredList()}
+       
       </section>
     </div>
   </div>
@@ -37,51 +38,53 @@ function UserPage() {
   `
 }
 
+const state = {
+  users: [],
+  userInput: '',
+  options: 'name',
+  t: 0
+}
+
 async function getInitialData() {
   const response = await fetch('https://jsonplaceholder.typicode.com/users')
   const users = await response.json()
+
+  state.users = users
 
   document.getElementById('output').innerHTML = users.map((user) => `<div>${user.name}</div>`).join('')
   document.getElementById('filteredresults').innerHTML = users.map((user) => `<div>${user.name}</div>`).join('')
 }
 
-async function getFilteredData() {
-  const state = {
-    users: [],
-    timer: 0,
-    timeout: 300,
-    userInput: '',
-    options: 'name'
-  }
+const filterItems = (users, userInput) => {
+  console.log({ state })
+  return users.filter((el) => el[state.options].toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
+}
 
-  const response = await fetch('https://jsonplaceholder.typicode.com/users')
-  state.users = await response.json()
+function setLoading(value) {
+  document.querySelector('#loading').innerHTML = value ? 'Loading...' : ''
+}
 
-  const filterItems = (users, userInput) => {
-    return state.users.filter((el) => el[state.options].toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
-  }
-
-  const input = document.getElementById('userinput')
+function render() {
   const results = document.getElementById('filteredresults')
-  const options = document.getElementById('options')
+  const filtered = filterItems(state.users, state.userInput)
+  const renderList = filtered.map((user) => `<div>${user[state.options]}</div>`).join('')
+  results.innerHTML = renderList
+  setLoading(false)
+}
 
-  options.addEventListener('change', (e) => {
-    state.options = e.target.value
-  })
+function setNewTimer() {
+  state.t && clearTimeout(state.t)
+  setLoading(true)
+  //state.t = setTimeout(render, 250)
+  render()
 
-  input.addEventListener('keydown', (e) => {
-    window.clearTimeout(state.timer)
-    state.userInput = e.target.value.trim()
-  })
+  console.log({ t: state.t })
+}
 
-  input.addEventListener('keyup', (e) => {
-    window.clearTimeout(state.timer)
-    state.timer = window.setTimeout(() => {
-      const filtered = filterItems(state.users, state.userInput)
-      const renderList = filtered.map((res) => `<div>${res[state.options]}</div>`).join('')
-      results.innerHTML = renderList
-    }, state.timeout)
-  })
+function setState(newValue) {
+  state.userInput = newValue
+
+  setNewTimer()
 }
 
 document.querySelector('body').innerHTML = UserPage()
