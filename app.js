@@ -1,6 +1,6 @@
 function UserPage() {
-  renderUserList = getInitialData
-  renderFilteredList = getFilteredData
+  renderUserList = getInitialData;
+  renderFilteredList = getFilteredData;
 
   return /*html*/ `
   <div class="container mt-5">
@@ -34,50 +34,58 @@ function UserPage() {
     </div>
   </div>
 </div>
-  `
+  `;
 }
 
 async function getInitialData() {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users')
-  const users = await response.json()
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
 
-  document.getElementById('output').innerHTML = users.map((user) => `<div>${user.name}</div>`).join('')
+  document.getElementById("output").innerHTML = users
+    .map((user) => `<div>${user.name}</div>`)
+    .join("");
 }
 
 async function getFilteredData() {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users')
-  const users = await response.json()
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
 
-  let option = document.getElementById('options')
+  let option = document.getElementById("options");
 
-  const filterItems = (users, userInput, options = option.value) => {
-    return users.filter((el) => el[options].toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
-  }
+  let timer;
+  const timeout = 1000;
+  let userInput = "";
 
-  let timer
-  const timeout = 1000
-  let userInput = ''
+  const input = document.getElementById("userinput");
+  const results = document.getElementById("results");
 
-  const input = document.getElementById('userinput')
-  const results = document.getElementById('results')
+  input.addEventListener("keydown", (e) => {
+    window.clearTimeout(timer);
+    console.log("typing...");
+  });
 
-  input.addEventListener('keydown', (e) => {
-    window.clearTimeout(timer)
-    console.log('typing...')
-  })
+  input.addEventListener("keyup", (e) => {
+    const filterItems = (users, userInput, options = option.value) => {
+      return users.filter(
+        (el) =>
+          el[options].toLowerCase().indexOf(userInput.toLowerCase()) !== -1
+      );
+    };
+    window.clearTimeout(timer);
+    userInput = e.target.value;
 
-  input.addEventListener('keyup', (e) => {
-    window.clearTimeout(timer)
-    userInput = e.target.value
     timer = window.setTimeout(() => {
+      let options = option.value;
       // filer list logic
-      const filtered = filterItems(users, userInput)
+      const filtered = filterItems(users, userInput);
 
-      results.innerHTML = filtered.map((res) => `<div>${res[options]}</div>`).join('')
-    }, timeout)
-  })
+      results.innerHTML = filtered
+        .map((res) => `<div>${res[options]}</div>`)
+        .join("");
+    }, timeout);
+  });
 
-  console.log(input)
+  // console.log(input);
 }
 
-document.querySelector('body').innerHTML = UserPage()
+document.querySelector("body").innerHTML = UserPage();
