@@ -45,39 +45,42 @@ async function getInitialData() {
 }
 
 async function getFilteredData() {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users')
-  const users = await response.json()
-
-  let option = document.getElementById('options')
-
-  const filterItems = (users, userInput, options = option.value) => {
-    return users.filter((el) => el[options].toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
+  const state = {
+    users: [],
+    timer: 0,
+    timeout: 300,
+    userInput: '',
+    options: 'name'
   }
 
-  let timer
-  const timeout = 1000
-  let userInput = ''
+  const response = await fetch('https://jsonplaceholder.typicode.com/users')
+  state.users = await response.json()
+
+  const filterItems = (users, userInput) => {
+    return state.users.filter((el) => el[state.options].toLowerCase().indexOf(userInput.toLowerCase()) !== -1)
+  }
 
   const input = document.getElementById('userinput')
   const results = document.getElementById('results')
+  const options = document.getElementById('options')
+
+  options.addEventListener('change', (e) => {
+    state.options = e.target.value
+  })
 
   input.addEventListener('keydown', (e) => {
-    window.clearTimeout(timer)
-    console.log('typing...')
+    window.clearTimeout(state.timer)
+    state.userInput = e.target.value.trim()
   })
 
   input.addEventListener('keyup', (e) => {
-    window.clearTimeout(timer)
-    userInput = e.target.value
-    timer = window.setTimeout(() => {
-      // filer list logic
-      const filtered = filterItems(users, userInput)
-
-      results.innerHTML = filtered.map((res) => `<div>${res[options]}</div>`).join('')
-    }, timeout)
+    window.clearTimeout(state.timer)
+    state.timer = window.setTimeout(() => {
+      const filtered = filterItems(state.users, state.userInput)
+      const renderList = filtered.map((res) => `<div>${res[state.options]}</div>`).join('')
+      results.innerHTML = renderList
+    }, state.timeout)
   })
-
-  console.log(input)
 }
 
 document.querySelector('body').innerHTML = UserPage()
